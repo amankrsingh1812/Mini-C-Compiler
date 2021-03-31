@@ -55,6 +55,7 @@ void handleUNARYOP_NODE(ofstream &fout, int subType)
 	}
 	else
 	{
+		//LOGICAL_NEGATION
 		fout << "cmp $0, %rax\n";
 		fout << "mov $0, %rax\n";
 		fout << "sete %al\n";
@@ -73,13 +74,42 @@ void handleBINARYOP_NODE(ofstream &fout, int subType)
 	case MINUS:
 		fout << "sub %rcx, %rax\n";
 		break;
-	//fout << "mov %rcx, %rax\n";
 	case MULTIPLICATION:
 		fout << "imul %rcx, %rax\n";
 		break;
 	case DIVISION:
 		fout << "cqto\n";
 		fout << "idivq %rcx\n";
+		break;
+	case EQUAL:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "sete %al\n";
+		break;
+	case NOTEQUAL:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "setne %al\n";
+		break;
+	case LESSTHAN:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "setl %al\n";
+		break;
+	case LESSTHANEQ:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "setle %al\n";
+		break;
+	case GREATERTHAN:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "setg %al\n";
+		break;
+	case GREATERTHANEQ:
+		fout << "comp %rcx, %rax\n";
+		fout << "mov 0, %rax\n";
+		fout << "setge %al\n";
 		break;
 	default:
 		cout << "ERROR\n";
@@ -92,7 +122,7 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	if (curNode == NULL)
 		return;
 
-	cout << curNode->type << " " << (curNode->subType==DIVISION)<<curNode->value << "\n";
+	cout << curNode->type << " " << (curNode->subType == DIVISION) << curNode->value << "\n";
 	switch (curNode->type)
 	{
 	case ROOT_NODE:
@@ -114,11 +144,42 @@ void AST:: traverse(ofstream &fout, node* curNode)
 		handleUNARYOP_NODE(fout, curNode->subType);
 		break;
 	case BINARYOP_NODE:
-		traverse(fout, curNode->descendants[1]);
-		fout << "push %rax\n";
-		traverse(fout, curNode->descendants[0]);
-		fout << "pop %rcx\n";
-		handleBINARYOP_NODE(fout, curNode->subType);
+		if (curNode->subType == AND)
+		{
+			traverse(fout, curNode->descendants[0]);
+			fout << "comp $0, %rax\n";
+			fout << "jne _expclause2\n";
+			fout << "jmp _end\n";
+			fout << "_expclause2:\n";
+			traverse(fout, curNode->descendants[1]);
+			fout << "comp $0, %rax\n";
+			fout << "mov $0, %rax\n";
+			fout << "setne %al\n";
+			fout << "_end:\n";
+
+		}
+		else if (curNode->subType == OR)
+		{
+			traverse(fout, curNode->descendants[0]);
+			fout << "comp $0, %rax\n";
+			fout << "je _expclause2\n";
+			fout << "mov $1, %rax\n";
+			fout << "jmp _end\n";
+			fout << "_expclause2:\n";
+			traverse(fout, curNode->descendants[1]);
+			fout << "comp $0, %rax\n";
+			fout << "mov $0, %rax\n";
+			fout << "setne %al\n";
+			fout << "_end:\n";
+		}
+		else
+		{
+			traverse(fout, curNode->descendants[1]);
+			fout << "push %rax\n";
+			traverse(fout, curNode->descendants[0]);
+			fout << "pop %rcx\n";
+			handleBINARYOP_NODE(fout, curNode->subType);
+		}
 		break;
 	case CONSTEXP_NODE:
 		fout << "mov $" << curNode->value << ", %rax\n";

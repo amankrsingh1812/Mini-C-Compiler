@@ -64,8 +64,16 @@ extern int yydebug;
     DIVISION = 270,
     COMPLEMENT = 271,
     LOGICAL_NEGATION = 272,
-    VOID = 273,
-    MAIN = 274
+    AND = 273,
+    OR = 274,
+    EQUAL = 275,
+    NOTEQUAL = 276,
+    LESSTHAN = 277,
+    LESSTHANEQ = 278,
+    GREATERTHAN = 279,
+    GREATERTHANEQ = 280,
+    MAIN = 281,
+    VOID = 282
   };
 #endif
 /* Tokens.  */
@@ -84,8 +92,16 @@ extern int yydebug;
 #define DIVISION 270
 #define COMPLEMENT 271
 #define LOGICAL_NEGATION 272
-#define VOID 273
-#define MAIN 274
+#define AND 273
+#define OR 274
+#define EQUAL 275
+#define NOTEQUAL 276
+#define LESSTHAN 277
+#define LESSTHANEQ 278
+#define GREATERTHAN 279
+#define GREATERTHANEQ 280
+#define MAIN 281
+#define VOID 282
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
