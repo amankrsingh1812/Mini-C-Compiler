@@ -26,6 +26,7 @@ class AST
 {
 public :
 	node * rootNodeAST;
+	int sectionsCnt;
 	AST();
 
 	void setRootNode(node* root);

@@ -72,8 +72,9 @@ extern int yydebug;
     LESSTHANEQ = 278,
     GREATERTHAN = 279,
     GREATERTHANEQ = 280,
-    MAIN = 281,
-    VOID = 282
+    ASSIGNMENT = 281,
+    MAIN = 282,
+    VOID = 283
   };
 #endif
 /* Tokens.  */
@@ -100,8 +101,9 @@ extern int yydebug;
 #define LESSTHANEQ 278
 #define GREATERTHAN 279
 #define GREATERTHANEQ 280
-#define MAIN 281
-#define VOID 282
+#define ASSIGNMENT 281
+#define MAIN 282
+#define VOID 283
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

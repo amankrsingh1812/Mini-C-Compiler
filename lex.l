@@ -34,6 +34,7 @@ id			{letter}({letter}|{digit})*
 "<=" 		 {return LESSTHANEQ;}
 ">" 		 {return GREATERTHAN;}
 ">=" 		 {return GREATERTHANEQ;}
+"=" 		 {return ASSIGNMENT;}
 void		 {return VOID;}
 int			 {return INT;}
 main		 {return MAIN;}

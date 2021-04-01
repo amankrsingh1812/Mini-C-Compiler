@@ -28,6 +28,7 @@ void addDescendantNode(uintptr_t parent, uintptr_t descendant)
 
 AST::AST()
 {
+	sectionsCnt = 0;
 	rootNodeAST = NULL;
 }
 
@@ -82,33 +83,33 @@ void handleBINARYOP_NODE(ofstream &fout, int subType)
 		fout << "idivq %rcx\n";
 		break;
 	case EQUAL:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "sete %al\n";
 		break;
 	case NOTEQUAL:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "setne %al\n";
 		break;
 	case LESSTHAN:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "setl %al\n";
 		break;
 	case LESSTHANEQ:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "setle %al\n";
 		break;
 	case GREATERTHAN:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "setg %al\n";
 		break;
 	case GREATERTHANEQ:
-		fout << "comp %rcx, %rax\n";
-		fout << "mov 0, %rax\n";
+		fout << "cmp %rcx, %rax\n";
+		fout << "mov $0, %rax\n";
 		fout << "setge %al\n";
 		break;
 	default:
@@ -127,17 +128,25 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	{
 	case ROOT_NODE:
 		fout << ".global _start\n";
-		visitDescendants(fout, curNode);
-		break;
-	case FUNCTION_NODE:
-		fout << "_start" << ":\n";
-		visitDescendants(fout, curNode);
-		break;
-	case STATEMENT_NODE:
-		visitDescendants(fout, curNode);
+		fout << "_start:\n";
+		fout << "call _main\n";
 		fout << "mov %rax, %rdi\n";
 		fout << "mov $60, %rax\n";
 		fout << "syscall\n";
+		visitDescendants(fout, curNode);
+		break;
+	case FUNCTION_NODE:
+		fout << ".global _main\n";
+		fout << "_main" << ":\n";
+		fout << "push %rbp\n";
+		fout << "mov %rsp, %rbp\n";
+		visitDescendants(fout, curNode);
+		fout << "mov %rbp, %rsp\n";
+		fout << "pop %rbp\n";
+		fout << "ret\n";
+		break;
+	case STATEMENT_NODE:
+		visitDescendants(fout, curNode);
 		break;
 	case UNARYOP_NODE:
 		visitDescendants(fout, curNode);
@@ -146,31 +155,33 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	case BINARYOP_NODE:
 		if (curNode->subType == AND)
 		{
+			int sc = (++sectionsCnt);
 			traverse(fout, curNode->descendants[0]);
-			fout << "comp $0, %rax\n";
-			fout << "jne _expclause2\n";
-			fout << "jmp _end\n";
-			fout << "_expclause2:\n";
+			fout << "cmp $0, %rax\n";
+			fout << "jne _expclause" << sc << "\n";
+			fout << "jmp _end" << sc << "\n";
+			fout << "_expclause" << sc << ":\n";
 			traverse(fout, curNode->descendants[1]);
-			fout << "comp $0, %rax\n";
+			fout << "cmp $0, %rax\n";
 			fout << "mov $0, %rax\n";
 			fout << "setne %al\n";
-			fout << "_end:\n";
+			fout << "_end" << sc << ":\n";
 
 		}
 		else if (curNode->subType == OR)
 		{
+			int sc = (++sectionsCnt);
 			traverse(fout, curNode->descendants[0]);
-			fout << "comp $0, %rax\n";
-			fout << "je _expclause2\n";
+			fout << "cmp $0, %rax\n";
+			fout << "je _expclause" << sc << "\n";
 			fout << "mov $1, %rax\n";
-			fout << "jmp _end\n";
-			fout << "_expclause2:\n";
+			fout << "jmp _end" << sc << "\n";
+			fout << "_expclause" << sc << ":\n";
 			traverse(fout, curNode->descendants[1]);
-			fout << "comp $0, %rax\n";
+			fout << "cmp $0, %rax\n";
 			fout << "mov $0, %rax\n";
 			fout << "setne %al\n";
-			fout << "_end:\n";
+			fout << "_end" << sc << ":\n";
 		}
 		else
 		{

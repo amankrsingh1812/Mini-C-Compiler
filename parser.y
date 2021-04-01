@@ -36,20 +36,21 @@
 %token  LESSTHANEQ
 %token  GREATERTHAN
 %token  GREATERTHANEQ
+%token  ASSIGNMENT
 %token  MAIN
 %token  VOID
 
 %%
 program 		: function {$$ = createNewNode(ROOT_NODE);addDescendantNode($$,$1);setASTroot($$);}
 
-function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY statement RCURLY {$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
+function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY statement RCURLY {printf("function hai\n");$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
 
-statement 		: RETURN additiveExp SEMICOLON {$$ = createNewNode(STATEMENT_NODE);addDescendantNode($$,$2);}
+statement 		: RETURN exp SEMICOLON {printf("Statement hai\n");$$ = createNewNode(STATEMENT_NODE);addDescendantNode($$,$2);}
 
 exp 			: exp binary_op_or logicalandExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);} 
 	   			| logicalandExp {$$ = $1;};
 
-logicalandExp   : logicalandExp binary_op_and equalityExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}
+logicalandExp   : logicalandExp binary_op_and equalityExp {printf("symbol to mila\n");$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}
 				| equalityExp {$$ = $1;};
 
 equalityExp 	: equalityExp binary_op_eq relationalExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}

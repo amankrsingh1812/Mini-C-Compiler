@@ -351,8 +351,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 27
-#define YY_END_OF_BUFFER 28
+#define YY_NUM_RULES 28
+#define YY_END_OF_BUFFER 29
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -362,11 +362,11 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[51] =
     {   0,
-        0,    0,   28,   27,    1,   12,   27,    3,    4,    9,
-        7,    8,   10,   26,    2,   17,   27,   19,   25,   25,
-       25,   25,   25,    5,   27,    6,   11,    1,   16,   13,
-       26,   18,   15,   20,   25,   25,   25,   25,   25,   14,
-       22,   25,   25,   25,   23,   25,   21,   25,   24,    0
+        0,    0,   29,   28,    1,   12,   28,    3,    4,    9,
+        7,    8,   10,   27,    2,   17,   21,   19,   26,   26,
+       26,   26,   26,    5,   28,    6,   11,    1,   16,   13,
+       27,   18,   15,   20,   26,   26,   26,   26,   26,   14,
+       23,   26,   26,   26,   24,   26,   22,   26,   25,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -857,39 +857,44 @@ YY_RULE_SETUP
 case 21:
 YY_RULE_SETUP
 #line 37 "lex.l"
-{return VOID;}
+{return ASSIGNMENT;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 38 "lex.l"
-{return INT;}
+{return VOID;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 39 "lex.l"
-{return MAIN;}
+{return INT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 40 "lex.l"
-{return RETURN;}
+{return MAIN;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 41 "lex.l"
-{return ID;}
+{return RETURN;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 42 "lex.l"
-{return num;}
+{return ID;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 43 "lex.l"
+{return num;}
+	YY_BREAK
+case 28:
+YY_RULE_SETUP
+#line 44 "lex.l"
 ECHO;
 	YY_BREAK
-#line 893 "lex.yy.c"
+#line 898 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1894,7 +1899,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 43 "lex.l"
+#line 44 "lex.l"
 
 
 int yywrap()
