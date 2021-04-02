@@ -39,7 +39,7 @@ void		 {return VOID;}
 int			 {return INT;}
 main		 {return MAIN;}
 return		 {return RETURN;}
-{id}		 {return ID;}
+{id}		 {return IDTOKEN;}
 {num}		 {return num;}
 %%
 

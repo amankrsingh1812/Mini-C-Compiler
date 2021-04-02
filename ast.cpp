@@ -116,6 +116,20 @@ void handleBINARYOP_NODE(ofstream &fout, int subType)
 		cout << "ERROR\n";
 		exit(1);
 	}
+	return;
+}
+
+void handleDECLARE_ASSIGN_STATEMENT_NODE(ofstream &fout)
+{
+	fout << "push %rax \n";
+	return;
+}
+
+
+void handleASSIGNMENTOP_NODE(ofstream &fout, int offset)
+{
+	fout << "mov %rax, " << offset << "(%rbp)\n";
+	return;
 }
 
 void AST:: traverse(ofstream &fout, node* curNode)
@@ -123,7 +137,7 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	if (curNode == NULL)
 		return;
 
-	cout << curNode->type << " " << (curNode->subType == DIVISION) << curNode->value << "\n";
+	cout << curNode->type << " " << curNode->value << "\n";
 	switch (curNode->type)
 	{
 	case ROOT_NODE:
@@ -141,13 +155,60 @@ void AST:: traverse(ofstream &fout, node* curNode)
 		fout << "push %rbp\n";
 		fout << "mov %rsp, %rbp\n";
 		visitDescendants(fout, curNode);
+		break;
+	case RETURN_STATEMENT_NODE:
+		traverse(fout, curNode->descendants[0]);
 		fout << "mov %rbp, %rsp\n";
 		fout << "pop %rbp\n";
 		fout << "ret\n";
+		if ((curNode->descendants).size() > 1)
+			traverse(fout, curNode->descendants[1]);
 		break;
-	case STATEMENT_NODE:
+	case EXP_STATEMENT_NODE:
 		visitDescendants(fout, curNode);
 		break;
+	case DECLARE_STATEMENT_NODE:
+	{
+		string symbolName = (curNode->descendants[0])->value;
+		if (symTab.insertNewSymbol(symbolName, 8) == false)
+		{
+			cout << "ERROR symbol defined already \n";
+			exit(1);
+		}
+		handleDECLARE_ASSIGN_STATEMENT_NODE(fout);
+		if ((curNode->descendants).size() > 1)
+			traverse(fout, curNode->descendants[1]);
+		break;
+	}
+	case DECLARE_ASSIGN_STATEMENT_NODE:
+	{
+		string symbolName = (curNode->descendants[0])->value;
+		if (symTab.insertNewSymbol(symbolName, 8) == false)
+		{
+			cout << "ERROR symbol defined already \n";
+			exit(1);
+		}
+		traverse(fout, curNode->descendants[1]);
+		handleDECLARE_ASSIGN_STATEMENT_NODE(fout);
+		if ((curNode->descendants).size() > 2)
+			traverse(fout, curNode->descendants[2]);
+		break;
+	}
+	case ASSIGNMENTOP_NODE:
+	{
+		int offset = symTab.getVal((curNode->descendants[0])->value);
+		cout << curNode->descendants[0]->value << " " << offset << "\n";
+		if (offset == INT_MIN)
+		{
+			cout << "ERROR symbol not defined \n";
+			exit(1);
+		}
+		cout << "B hai\n";
+		traverse(fout, curNode->descendants[1]);
+		cout << "B wapis\n";
+		handleASSIGNMENTOP_NODE(fout, offset);
+		break;
+	}
 	case UNARYOP_NODE:
 		visitDescendants(fout, curNode);
 		handleUNARYOP_NODE(fout, curNode->subType);
@@ -195,6 +256,17 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	case CONSTEXP_NODE:
 		fout << "mov $" << curNode->value << ", %rax\n";
 		break;
+	case IDENTIFIER_NODE:
+	{
+		int offset = symTab.getVal(curNode->value);
+		if (offset == INT_MIN)
+		{
+			cout << "ERROR symbol not defined \n";
+			exit(1);
+		}
+		fout << "mov " << offset << "(%rbp), %rax\n";
+		break;
+	}
 	default:
 		cout << "ERROR\n";
 		exit(1);

@@ -50,7 +50,7 @@ extern int yydebug;
   enum yytokentype
   {
     INT = 258,
-    ID = 259,
+    IDTOKEN = 259,
     num = 260,
     LPARENTHESIS = 261,
     RPARENTHESIS = 262,
@@ -79,7 +79,7 @@ extern int yydebug;
 #endif
 /* Tokens.  */
 #define INT 258
-#define ID 259
+#define IDTOKEN 259
 #define num 260
 #define LPARENTHESIS 261
 #define RPARENTHESIS 262

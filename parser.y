@@ -14,7 +14,7 @@
 %} 
 
 %token  INT
-%token  ID
+%token  IDTOKEN
 %token  num
 %token  LPARENTHESIS
 %token  RPARENTHESIS
@@ -43,14 +43,23 @@
 %%
 program 		: function {$$ = createNewNode(ROOT_NODE);addDescendantNode($$,$1);setASTroot($$);}
 
-function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY statement RCURLY {printf("function hai\n");$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
+function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY statementList RCURLY {printf("function hai\n");$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
 
-statement 		: RETURN exp SEMICOLON {printf("Statement hai\n");$$ = createNewNode(STATEMENT_NODE);addDescendantNode($$,$2);}
+statementList   : statement statementList {addDescendantNode($1,$2);$$ = $1;};
+				| statement {$$ = $1;};
 
-exp 			: exp binary_op_or logicalandExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);} 
+statement 		: RETURN exp SEMICOLON {$$ = createNewNode(RETURN_STATEMENT_NODE);addDescendantNode($$,$2);}
+				| exp SEMICOLON {$$ = createNewNode(EXP_STATEMENT_NODE);addDescendantNode($$,$1);}
+				| INT ID SEMICOLON {$$ = createNewNode(DECLARE_STATEMENT_NODE);addDescendantNode($$,$2);}
+				| INT ID ASSIGNMENT exp SEMICOLON {$$ = createNewNode(DECLARE_ASSIGN_STATEMENT_NODE);addDescendantNode($$,$2);addDescendantNode($$,$4);};
+
+exp             : ID ASSIGNMENT exp {$$ = createNewNode(ASSIGNMENTOP_NODE);addDescendantNode($$,$1);addDescendantNode($$,$3);}
+				| logicalorexp {$$ = $1;};
+
+logicalorexp 	: logicalorexp binary_op_or logicalandExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);} 
 	   			| logicalandExp {$$ = $1;};
 
-logicalandExp   : logicalandExp binary_op_and equalityExp {printf("symbol to mila\n");$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}
+logicalandExp   : logicalandExp binary_op_and equalityExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}
 				| equalityExp {$$ = $1;};
 
 equalityExp 	: equalityExp binary_op_eq relationalExp {$$ = createNewNode(BINARYOP_NODE,$2);addDescendantNode($$,$1);addDescendantNode($$,$3);}
@@ -67,20 +76,23 @@ term            : term binary_op_mul factor {$$ = createNewNode(BINARYOP_NODE,$2
 
 factor          : LPARENTHESIS exp RPARENTHESIS {$$ = $2;}
 				| unary_op factor {$$ = createNewNode(UNARYOP_NODE,$1);addDescendantNode($$,$2);}
-				| num {$$ = createNewNode(CONSTEXP_NODE,0,yytext);};
+				| num {$$ = createNewNode(CONSTEXP_NODE,0,yytext);}
+				| ID {$$ = $1;};
 
-binary_op_or  : OR {$$ = OR;};
+ID 				: IDTOKEN {$$ = createNewNode(IDENTIFIER_NODE,0,yytext);};
 
-binary_op_and : AND {$$ = AND;};
+binary_op_or  	: OR {$$ = OR;};
 
-binary_op_eq  : NOTEQUAL {$$ = NOTEQUAL;} | EQUAL {$$ = EQUAL;};
+binary_op_and 	: AND {$$ = AND;};
 
-binary_op_rel : LESSTHAN {$$ = LESSTHAN;} | LESSTHANEQ {$$ = LESSTHANEQ;} | GREATERTHAN {$$ = GREATERTHAN;} | GREATERTHANEQ {$$ =GREATERTHANEQ;};
+binary_op_eq  	: NOTEQUAL {$$ = NOTEQUAL;} | EQUAL {$$ = EQUAL;};
 
-binary_op_add : ADDITION {$$ = ADDITION;} | MINUS {$$ = MINUS;};
+binary_op_rel 	: LESSTHAN {$$ = LESSTHAN;} | LESSTHANEQ {$$ = LESSTHANEQ;} | GREATERTHAN {$$ = GREATERTHAN;} | GREATERTHANEQ {$$ =GREATERTHANEQ;};
 
-binary_op_mul : MULTIPLICATION {$$ = MULTIPLICATION;} | DIVISION {$$ = DIVISION;};
+binary_op_add 	: ADDITION {$$ = ADDITION;} | MINUS {$$ = MINUS;};
 
-unary_op        : LOGICAL_NEGATION {$$ =LOGICAL_NEGATION;} | COMPLEMENT {$$ = COMPLEMENT;} | MINUS {$$= MINUS;};
+binary_op_mul 	: MULTIPLICATION {$$ = MULTIPLICATION;} | DIVISION {$$ = DIVISION;};
+
+unary_op       	: LOGICAL_NEGATION {$$ =LOGICAL_NEGATION;} | COMPLEMENT {$$ = COMPLEMENT;} | MINUS {$$= MINUS;};
 %%
 

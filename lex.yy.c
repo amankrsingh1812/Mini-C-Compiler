@@ -882,7 +882,7 @@ YY_RULE_SETUP
 case 26:
 YY_RULE_SETUP
 #line 42 "lex.l"
-{return ID;}
+{return IDTOKEN;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP

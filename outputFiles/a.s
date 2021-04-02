@@ -8,24 +8,35 @@ syscall
 _main:
 push %rbp
 mov %rsp, %rbp
-mov $10, %rax
+mov $1, %rax
+push %rax 
+mov $1, %rax
 push %rax
-mov $8, %rax
-push %rax
-mov $2, %rax
-push %rax
-mov $4, %rax
+mov -8(%rbp), %rax
 pop %rcx
-cqto
-idivq %rcx
-pop %rcx
-imul %rcx, %rax
+add %rcx, %rax
+push %rax 
+mov $1, %rax
 push %rax
-mov $23, %rax
-push %rax
-mov $121, %rax
+mov -16(%rbp), %rax
 pop %rcx
-imul %rcx, %rax
+add %rcx, %rax
+push %rax 
+mov $1, %rax
+push %rax
+mov -24(%rbp), %rax
+pop %rcx
+add %rcx, %rax
+push %rax 
+mov -32(%rbp), %rax
+push %rax
+mov -24(%rbp), %rax
+push %rax
+mov -16(%rbp), %rax
+push %rax
+mov -8(%rbp), %rax
+pop %rcx
+add %rcx, %rax
 pop %rcx
 add %rcx, %rax
 pop %rcx

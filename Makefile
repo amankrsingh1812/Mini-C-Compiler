@@ -1,7 +1,10 @@
 CC = g++ -std=c++17 
 
-compiler: compiler.cpp lex.o parser.o ast.o
-		$(CC)compiler.cpp lex.o parser.o ast.o -o compiler.out
+compiler: compiler.cpp lex.o parser.o ast.o symbolTable.o
+		$(CC)compiler.cpp lex.o parser.o ast.o symbolTable.o -o compiler.out
+
+symbolTable.o : symbolTable.cpp symbolTable.h
+		$(CC)-c symbolTable.cpp -o symbolTable.o
 
 ast.o: ast.cpp ast.h
 		$(CC)-c ast.cpp -o ast.o
