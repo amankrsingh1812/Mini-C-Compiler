@@ -7,10 +7,12 @@ node :: node (int Ntype, int NsubType, string Nvalue )
 	subType = NsubType;
 	value = Nvalue;
 	descendants = vector<node *>();
+	elseNode = NULL;
 }
 
 void node :: addDescendant(node * descendant)
 {
+	//cout<<type<<" "<<descendant<<"\n";
 	descendants.push_back(descendant);
 }
 
@@ -22,13 +24,20 @@ uintptr_t createNewNode(int Ntype, int NsubType, string Nvalue )
 
 void addDescendantNode(uintptr_t parent, uintptr_t descendant)
 {
+	//cout<<parent<<" "<<descendant<<"\n";
 	((node *)parent)->addDescendant((node *)descendant);
 	return ;
+}
+
+void setElseNode(uintptr_t parent, uintptr_t descendant)
+{
+	((node *)parent)->elseNode = (node *)descendant;
 }
 
 AST::AST()
 {
 	sectionsCnt = 0;
+	ifstmCnt = 0;
 	rootNodeAST = NULL;
 }
 
@@ -137,7 +146,13 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	if (curNode == NULL)
 		return;
 
-	cout << curNode->type << " " << curNode->value << "\n";
+	//cout << curNode->type << " " << (uintptr_t)curNode << " &&&&&&&& ";
+	//for (auto it : curNode->descendants)
+	//cout << (uintptr_t)it << " ";
+	//cout << "\n";
+	//visitDescendants(fout,curNode);
+	//return ;
+	//cout << curNode->type << " " << curNode->value << "\n";
 	switch (curNode->type)
 	{
 	case ROOT_NODE:
@@ -194,18 +209,36 @@ void AST:: traverse(ofstream &fout, node* curNode)
 			traverse(fout, curNode->descendants[2]);
 		break;
 	}
+	case IF_STATEMENT_NODE:
+	{
+		int cnt = (++ifstmCnt);
+		traverse(fout, curNode->descendants[0]);
+		fout << "cmp $0, %rax\n";
+		fout << "je _notif" << cnt << "\n";
+		traverse(fout, curNode->descendants[1]);
+		if (curNode->elseNode != NULL)
+		{
+			fout << "jmp _postif" << cnt << "\n";
+		}
+		fout << "_notif" << cnt << ":\n";
+		if (curNode->elseNode != NULL)
+		{
+			traverse(fout, curNode->elseNode);
+			fout << "_postif" << cnt << ":\n";
+		}
+		traverse(fout, curNode->descendants[2]);
+		break;
+	}
 	case ASSIGNMENTOP_NODE:
 	{
 		int offset = symTab.getVal((curNode->descendants[0])->value);
-		cout << curNode->descendants[0]->value << " " << offset << "\n";
+		//cout << curNode->descendants[0]->value << " " << offset << "\n";
 		if (offset == INT_MIN)
 		{
 			cout << "ERROR symbol not defined \n";
 			exit(1);
 		}
-		cout << "B hai\n";
 		traverse(fout, curNode->descendants[1]);
-		cout << "B wapis\n";
 		handleASSIGNMENTOP_NODE(fout, offset);
 		break;
 	}

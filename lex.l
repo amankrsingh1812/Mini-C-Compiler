@@ -39,6 +39,15 @@ void		 {return VOID;}
 int			 {return INT;}
 main		 {return MAIN;}
 return		 {return RETURN;}
+if           {return IF;}
+else 		 {return ELSE;}
+for          {return FOR;}
+while        {return WHILE;}
+do           {return DO;}
+break        {return BREAK;}
+continue     {return CONTINUE;}
+":" 		 {return COLON;}
+"?" 		 {return QUESTION_MARK;}
 {id}		 {return IDTOKEN;}
 {num}		 {return num;}
 %%

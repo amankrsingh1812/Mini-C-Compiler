@@ -14,6 +14,7 @@ enum nodeTypes{
 	EXP_STATEMENT_NODE,
 	DECLARE_STATEMENT_NODE,
 	DECLARE_ASSIGN_STATEMENT_NODE,
+	IF_STATEMENT_NODE,
 	UNARYOP_NODE,
 	BINARYOP_NODE,
 	ASSIGNMENTOP_NODE,
@@ -25,6 +26,7 @@ enum nodeTypes{
 void addDescendantNode(uintptr_t parent, uintptr_t descendant);
 uintptr_t createNewNode(int Ntype, int NsubType =0, string Nvalue ="");
 void setASTroot(uintptr_t root);
+void setElseNode(uintptr_t parent, uintptr_t descendant);
 extern AST ast;
 extern symbolTable symTab;
 #endif

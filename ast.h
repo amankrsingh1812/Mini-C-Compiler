@@ -15,6 +15,7 @@ public:
 	string value;
 
 	vector<node*> descendants;
+	node* elseNode;
 	node(int Ntype, int NsubType = 0, string Nvalue = "");
 	void addDescendant(node * descendant);
 };
@@ -27,6 +28,7 @@ class AST
 public :
 	node * rootNodeAST;
 	int sectionsCnt;
+	int ifstmCnt;
 	AST();
 
 	void setRootNode(node* root);

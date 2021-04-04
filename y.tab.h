@@ -74,7 +74,12 @@ extern int yydebug;
     GREATERTHANEQ = 280,
     ASSIGNMENT = 281,
     MAIN = 282,
-    VOID = 283
+    VOID = 283,
+    IF = 284,
+    ELSE = 285,
+    COLON = 286,
+    QUESTION_MARK = 287,
+    LOWER_THAN_ELSE = 288
   };
 #endif
 /* Tokens.  */
@@ -104,6 +109,11 @@ extern int yydebug;
 #define ASSIGNMENT 281
 #define MAIN 282
 #define VOID 283
+#define IF 284
+#define ELSE 285
+#define COLON 286
+#define QUESTION_MARK 287
+#define LOWER_THAN_ELSE 288
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

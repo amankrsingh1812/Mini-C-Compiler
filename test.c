@@ -1,7 +1,16 @@
 int main() {
-    int a=1;
-	int b=a+1;
-	int c=b+1;
-	int d=c+1;
-	return a+b+c+d;
+    int a = 0;
+    int b = 0;
+
+    if (a)
+        a = 2;
+    else
+        a = 3;
+
+    if (b)
+        b = 4;
+    else
+        b = 5;
+
+    return a + b;
 }
