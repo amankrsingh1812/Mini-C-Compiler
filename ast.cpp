@@ -14,6 +14,13 @@ void node :: addDescendant(node * descendant)
 {
 	//cout<<type<<" "<<descendant<<"\n";
 	descendants.push_back(descendant);
+	return;
+}
+
+void node :: addBlockDescendant(node *descendant)
+{
+	blockDescendantList.push_back(descendant);
+	return;
 }
 
 uintptr_t createNewNode(int Ntype, int NsubType, string Nvalue )
@@ -27,6 +34,12 @@ void addDescendantNode(uintptr_t parent, uintptr_t descendant)
 	//cout<<parent<<" "<<descendant<<"\n";
 	((node *)parent)->addDescendant((node *)descendant);
 	return ;
+}
+
+void addBlockDescendantNode(uintptr_t blockNode, uintptr_t descendant)
+{
+	((node *)blockNode)->addBlockDescendant((node *)descendant);
+	return;
 }
 
 void setElseNode(uintptr_t parent, uintptr_t descendant)
@@ -170,6 +183,13 @@ void AST:: traverse(ofstream &fout, node* curNode)
 		fout << "push %rbp\n";
 		fout << "mov %rsp, %rbp\n";
 		visitDescendants(fout, curNode);
+		break;
+	case BLOCK_NODE:
+		for(auto descendant:curNode->blockDescendantList)
+		{
+			cout<<"*"<<descendant<<"\n";
+			traverse(fout,descendant);
+		}
 		break;
 	case RETURN_STATEMENT_NODE:
 		traverse(fout, curNode->descendants[0]);

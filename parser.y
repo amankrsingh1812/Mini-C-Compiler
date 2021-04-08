@@ -57,8 +57,8 @@ program 		: function {$$ = createNewNode(ROOT_NODE);addDescendantNode($$,$1);set
 
 function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY block RCURLY {printf("function hai\n");$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
 
-block   		: blockItem block {addDescendantNode($1,$2);$$ = $1;}
-				| blockItem {$$ = $1;};
+block   		: block  blockItem {addBlockDescendantNode($1,$2);$$ = $1;}
+				| blockItem {$$ = createNewNode(BLOCK_NODE);addBlockDescendantNode($$,$1);};
 
 blockItem 		: statement {$$ = $1;}
 				| declaration {$$ = $1;};
@@ -66,7 +66,7 @@ blockItem 		: statement {$$ = $1;}
 declaration 	: INT ID SEMICOLON {$$ = createNewNode(DECLARE_STATEMENT_NODE);addDescendantNode($$,$2);}
 				| INT ID ASSIGNMENT exp SEMICOLON {$$ = createNewNode(DECLARE_ASSIGN_STATEMENT_NODE);addDescendantNode($$,$2);addDescendantNode($$,$4);};
 			 	
-statement 		: LCURLY block RCURLY {$$ = $1;}
+statement 		: LCURLY block RCURLY {$$ = $2;}
 				| RETURN exp SEMICOLON {$$ = createNewNode(RETURN_STATEMENT_NODE);addDescendantNode($$,$2);}
 				| exp SEMICOLON {$$ = createNewNode(EXP_STATEMENT_NODE);addDescendantNode($$,$1);}
 				| IF LPARENTHESIS exp RPARENTHESIS statement %prec LOWER_THAN_ELSE {$$ = createNewNode(IF_STATEMENT_NODE);addDescendantNode($$,$3);addDescendantNode($$,$5);}

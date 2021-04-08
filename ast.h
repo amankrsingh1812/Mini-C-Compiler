@@ -15,9 +15,11 @@ public:
 	string value;
 
 	vector<node*> descendants;
+	vector<node*> blockDescendantList;
 	node* elseNode;
 	node(int Ntype, int NsubType = 0, string Nvalue = "");
 	void addDescendant(node * descendant);
+	void addBlockDescendant(node * descendant);
 };
 
 

@@ -79,7 +79,12 @@ extern int yydebug;
     ELSE = 285,
     COLON = 286,
     QUESTION_MARK = 287,
-    LOWER_THAN_ELSE = 288
+    FOR = 288,
+    WHILE = 289,
+    DO = 290,
+    BREAK = 291,
+    CONTINUE = 292,
+    LOWER_THAN_ELSE = 293
   };
 #endif
 /* Tokens.  */
@@ -113,7 +118,12 @@ extern int yydebug;
 #define ELSE 285
 #define COLON 286
 #define QUESTION_MARK 287
-#define LOWER_THAN_ELSE 288
+#define FOR 288
+#define WHILE 289
+#define DO 290
+#define BREAK 291
+#define CONTINUE 292
+#define LOWER_THAN_ELSE 293
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
