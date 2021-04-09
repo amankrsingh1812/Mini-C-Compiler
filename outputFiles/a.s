@@ -8,17 +8,27 @@ syscall
 _main:
 push %rbp
 mov %rsp, %rbp
-mov $2, %rax
+mov $0, %rax
 push %rax 
-mov $13, %rax
-push %rax 
-mov -8(%rbp), %rax
+_for0:
+mov $3, %rax
 push %rax
-mov -16(%rbp), %rax
+mov -8(%rbp), %rax
+pop %rcx
+cmp %rcx, %rax
+mov $0, %rax
+setle %al
+cmp $1, %rax
+jne _postfor0
+mov $1, %rax
+push %rax
+mov -8(%rbp), %rax
 pop %rcx
 add %rcx, %rax
-mov %rax, -16(%rbp)
-mov -16(%rbp), %rax
+mov %rax, -8(%rbp)
+jmp _for0
+_postfor0:
+mov -8(%rbp), %rax
 mov %rbp, %rsp
 pop %rbp
 ret

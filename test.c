@@ -1,8 +1,8 @@
 int main() {
-    int a = 2;
-    int b = 13;
-    {
-        b = b + a;
+    int a = 0;
+    for (;a<=3; ) {
+		a=a+1;
     }
-    return b;
+
+    return a;
 }

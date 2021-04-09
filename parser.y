@@ -7,7 +7,7 @@
 	/* yacc error handler */
    void yyerror(char const * s)
    {   
-		printf ("YYERROR:%s\n", s);
+		printf ("YYERROR:%s %s\n", s,yytext);
    } 
 
 

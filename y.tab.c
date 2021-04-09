@@ -76,7 +76,7 @@
 	/* yacc error handler */
    void yyerror(char const * s)
    {   
-		printf ("YYERROR:%s\n", s);
+		printf ("YYERROR:%s %s\n", s,yytext);
    } 
 
 
@@ -1511,7 +1511,7 @@ yyreduce:
 
   case 9:
 #line 68 "parser.y"
-                                            {yyval = createNewNode(NULLEXP_NODE);}
+                                            {printf("semicolon mila\n");yyval = createNewNode(NULLEXP_NODE);}
 #line 1516 "y.tab.c"
     break;
 
@@ -1541,7 +1541,7 @@ yyreduce:
 
   case 14:
 #line 75 "parser.y"
-                                               {yyval = createNewNode(NULLEXP_NODE);}
+                                               {printf(") mila\n");yyval = createNewNode(NULLEXP_NODE);}
 #line 1546 "y.tab.c"
     break;
 
@@ -1607,7 +1607,7 @@ yyreduce:
 
   case 25:
 #line 88 "parser.y"
-                                                                                                 {yyval = createNewNode(FOR_NODE);addDescendantNode(yyval,yyvsp[-3]);addDescendantNode(yyval,createNewNode(CONSTEXP_NODE,0,"1"));addDescendantNode(yyval,yyvsp[-1]);addDescendantNode(yyval,yyvsp[0]);}
+                                                                                                 {printf("for mila\n");yyval = createNewNode(FOR_NODE);addDescendantNode(yyval,yyvsp[-3]);addDescendantNode(yyval,createNewNode(CONSTEXP_NODE,0,"1"));addDescendantNode(yyval,yyvsp[-1]);addDescendantNode(yyval,yyvsp[0]);}
 #line 1612 "y.tab.c"
     break;
 

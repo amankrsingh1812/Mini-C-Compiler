@@ -210,28 +210,45 @@ void AST:: traverse(ofstream &fout, node* curNode)
 	case WHILE_NODE:
 	{
 		int curWhileCnt = whileCnt++;
+		int g = 0;
+		symTab.incrNestLevel();
 		fout << "_while" << curWhileCnt << ":\n";
 		traverse(fout, curNode->descendants[0]);
 		fout << "cmp $1, %rax\n";
 		fout << "jne _postwhile" << curWhileCnt << "\n";
 		traverse(fout, curNode->descendants[1]);
 		fout << "jmp _while" << curWhileCnt << "\n";
+
 		fout << "_postwhile" << curWhileCnt << ":\n";
+
+		g = symTab.decrNestLevel();
+		if (g)
+			fout << "add $" << g << ", %rsp\n";
+
 		break;
 	}
 	case FOR_NODE:
 	{
 		int curForCnt = forCnt++;
+		int g = 0;
+		symTab.incrNestLevel();
 		traverse(fout, curNode->descendants[0]);
 		fout << "_for" << curForCnt << ":\n";
 		traverse(fout, curNode->descendants[1]);
 		fout << "cmp $1, %rax\n";
 		fout << "jne _postfor" << curForCnt << "\n";
+		//symTab.incrNestLevel();
 		traverse(fout, curNode->descendants[3]);
+		//int g = symTab.decrNestLevel();
+		//if (g)
+		//fout << "add $" << g << ", %rsp\n";
 		traverse(fout, curNode->descendants[2]);
 		fout << "jmp _for" << curForCnt << "\n";
 
 		fout << "_postfor" << curForCnt << ":\n";
+		g = symTab.decrNestLevel();
+		if (g)
+			fout << "add $" << g << ", %rsp\n";
 		break;
 	}
 	case RETURN_STATEMENT_NODE:
