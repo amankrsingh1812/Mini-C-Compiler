@@ -48,6 +48,7 @@
 %token  DO
 %token  BREAK
 %token  CONTINUE
+%token  COMMA
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -55,7 +56,7 @@
 %%
 program 		: function {$$ = createNewNode(ROOT_NODE);addDescendantNode($$,$1);setASTroot($$);}
 
-function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY block RCURLY {printf("function hai\n");$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
+function 		: INT MAIN LPARENTHESIS RPARENTHESIS LCURLY block RCURLY {printf("function hai\n");setFuncOuterBlock($6);$$ = createNewNode(FUNCTION_NODE);addDescendantNode($$,$6);}
 
 block   		: block  blockItem {addBlockDescendantNode($1,$2);$$ = $1;}
 				| blockItem {$$ = createNewNode(BLOCK_NODE);addBlockDescendantNode($$,$1);};

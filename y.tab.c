@@ -1447,7 +1447,7 @@ yyreduce:
 
   case 3:
 #line 58 "parser.y"
-                                                                                 {printf("function hai\n");yyval = createNewNode(FUNCTION_NODE);addDescendantNode(yyval,yyvsp[-1]);}
+                                                                                 {printf("function hai\n");setFuncOuterBlock(yyvsp[-1]);yyval = createNewNode(FUNCTION_NODE);addDescendantNode(yyval,yyvsp[-1]);}
 #line 1452 "y.tab.c"
     break;
 

@@ -1,12 +1,9 @@
-int main()
-{
-	int a = 1;
-	{
-		a = 2;
-		{
-			return a;
-		}
-	}
-
-	return 0;
+int main() {
+    int a = 2;
+    int b = 13;
+    {
+        int a = 1;
+        b = b + a;
+    }
+    return b;
 }

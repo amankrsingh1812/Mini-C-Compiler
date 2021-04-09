@@ -8,15 +8,20 @@ syscall
 _main:
 push %rbp
 mov %rsp, %rbp
+mov $2, %rax
+push %rax 
+mov $13, %rax
+push %rax 
 mov $1, %rax
 push %rax 
-mov $2, %rax
-mov %rax, -8(%rbp)
-mov -8(%rbp), %rax
-mov %rbp, %rsp
-pop %rbp
-ret
-mov $0, %rax
+mov -24(%rbp), %rax
+push %rax
+mov -16(%rbp), %rax
+pop %rcx
+add %rcx, %rax
+mov %rax, -16(%rbp)
+add $8, %rsp
+mov -16(%rbp), %rax
 mov %rbp, %rsp
 pop %rbp
 ret

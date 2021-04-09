@@ -15,6 +15,7 @@ id			{letter}({letter}|{digit})*
 %%
 
 {whitespace} {}
+","          {return COMMA;}
 ";"          {return SEMICOLON;}
 "("			 {return LPARENTHESIS;}
 ")"			 {return RPARENTHESIS;}
@@ -50,6 +51,7 @@ continue     {return CONTINUE;}
 "?" 		 {return QUESTION_MARK;}
 {id}		 {return IDTOKEN;}
 {num}		 {return num;}
+
 %%
 
 int yywrap()

@@ -20,8 +20,12 @@ enum nodeTypes{
 	BINARYOP_NODE,
 	ASSIGNMENTOP_NODE,
 	CONSTEXP_NODE,
-	IDENTIFIER_NODE,
+	IDENTIFIER_NODE
 	
+};
+
+enum symbolTypes{
+	INT_SYMBOL
 };
 
 void addDescendantNode(uintptr_t parent, uintptr_t descendant);
@@ -29,6 +33,8 @@ void addBlockDescendantNode(uintptr_t blockNode, uintptr_t descendant);
 uintptr_t createNewNode(int Ntype, int NsubType =0, string Nvalue ="");
 void setASTroot(uintptr_t root);
 void setElseNode(uintptr_t parent, uintptr_t descendant);
+void setFuncOuterBlock(uintptr_t curNode);
+
 extern AST ast;
 extern symbolTable symTab;
 #endif

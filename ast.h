@@ -13,6 +13,7 @@ public:
 	int type;
 	int subType;
 	string value;
+	bool isFuncOuterBlock;
 
 	vector<node*> descendants;
 	vector<node*> blockDescendantList;
@@ -31,6 +32,7 @@ public :
 	node * rootNodeAST;
 	int sectionsCnt;
 	int ifstmCnt;
+	int depth;
 	AST();
 
 	void setRootNode(node* root);
