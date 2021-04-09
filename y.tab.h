@@ -84,7 +84,8 @@ extern int yydebug;
     DO = 290,
     BREAK = 291,
     CONTINUE = 292,
-    LOWER_THAN_ELSE = 293
+    COMMA = 293,
+    LOWER_THAN_ELSE = 294
   };
 #endif
 /* Tokens.  */
@@ -123,7 +124,8 @@ extern int yydebug;
 #define DO 290
 #define BREAK 291
 #define CONTINUE 292
-#define LOWER_THAN_ELSE 293
+#define COMMA 293
+#define LOWER_THAN_ELSE 294
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

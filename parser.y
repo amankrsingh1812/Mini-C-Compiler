@@ -64,14 +64,28 @@ block   		: block  blockItem {addBlockDescendantNode($1,$2);$$ = $1;}
 blockItem 		: statement {$$ = $1;}
 				| declaration {$$ = $1;};
 
+expORdecl       : exp SEMICOLON {$$ = $1;}
+				| SEMICOLON {$$ = createNewNode(NULLEXP_NODE);}
+				| declaration {$$ = $1;};
+
+expSEMICOLON    : exp SEMICOLON {$$ =$1;}
+				| SEMICOLON {$$ = createNewNode(NULLEXP_NODE);};
+
+expRPARENTHESIS : exp RPARENTHESIS {$$ = $1;}
+				| RPARENTHESIS {$$ = createNewNode(NULLEXP_NODE);};
+
 declaration 	: INT ID SEMICOLON {$$ = createNewNode(DECLARE_STATEMENT_NODE);addDescendantNode($$,$2);}
 				| INT ID ASSIGNMENT exp SEMICOLON {$$ = createNewNode(DECLARE_ASSIGN_STATEMENT_NODE);addDescendantNode($$,$2);addDescendantNode($$,$4);};
 			 	
 statement 		: LCURLY block RCURLY {$$ = $2;}
+			    | LCURLY RCURLY {$$ = createNewNode(NULLEXP_NODE);}
 				| RETURN exp SEMICOLON {$$ = createNewNode(RETURN_STATEMENT_NODE);addDescendantNode($$,$2);}
-				| exp SEMICOLON {$$ = createNewNode(EXP_STATEMENT_NODE);addDescendantNode($$,$1);}
+				| expSEMICOLON {$$ = createNewNode(EXP_STATEMENT_NODE);addDescendantNode($$,$1);}
 				| IF LPARENTHESIS exp RPARENTHESIS statement %prec LOWER_THAN_ELSE {$$ = createNewNode(IF_STATEMENT_NODE);addDescendantNode($$,$3);addDescendantNode($$,$5);}
-				| IF LPARENTHESIS exp RPARENTHESIS statement ELSE statement {$$ = createNewNode(IF_STATEMENT_NODE);addDescendantNode($$,$3);addDescendantNode($$,$5);setElseNode($$,$7);};
+				| IF LPARENTHESIS exp RPARENTHESIS statement ELSE statement {$$ = createNewNode(IF_STATEMENT_NODE);addDescendantNode($$,$3);addDescendantNode($$,$5);setElseNode($$,$7);}
+                | WHILE LPARENTHESIS exp RPARENTHESIS statement {$$ = createNewNode(WHILE_NODE);addDescendantNode($$,$3);addDescendantNode($$,$5);}
+				| FOR LPARENTHESIS expORdecl exp SEMICOLON expRPARENTHESIS statement {$$ = createNewNode(FOR_NODE);addDescendantNode($$,$3);addDescendantNode($$,$4);addDescendantNode($$,$6);addDescendantNode($$,$7);}
+				| FOR LPARENTHESIS expORdecl SEMICOLON expRPARENTHESIS statement {$$ = createNewNode(FOR_NODE);addDescendantNode($$,$3);addDescendantNode($$,createNewNode(CONSTEXP_NODE,0,"1"));addDescendantNode($$,$5);addDescendantNode($$,$6);};
 
 exp             : ID ASSIGNMENT exp {$$ = createNewNode(ASSIGNMENTOP_NODE);addDescendantNode($$,$1);addDescendantNode($$,$3);}
 				| logicalorexp {$$ = $1;};
