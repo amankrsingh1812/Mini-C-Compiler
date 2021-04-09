@@ -32,6 +32,8 @@ public :
 	node * rootNodeAST;
 	int sectionsCnt;
 	int ifstmCnt;
+	int whileCnt;
+	int forCnt;
 	int depth;
 	AST();
 

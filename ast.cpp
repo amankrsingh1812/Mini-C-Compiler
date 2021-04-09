@@ -52,6 +52,8 @@ AST::AST()
 	depth = 0;
 	sectionsCnt = 0;
 	ifstmCnt = 0;
+	whileCnt = 0;
+	forCnt = 0;
 	rootNodeAST = NULL;
 }
 
@@ -192,7 +194,7 @@ void AST:: traverse(ofstream &fout, node* curNode)
 		break;
 	case BLOCK_NODE:
 	{
-		cout<<"block open\n";
+		cout << "block open\n";
 		symTab.incrNestLevel();
 		for (auto descendant : curNode->blockDescendantList)
 		{
@@ -200,9 +202,36 @@ void AST:: traverse(ofstream &fout, node* curNode)
 			traverse(fout, descendant);
 		}
 		int g = symTab.decrNestLevel();
-		if(g && !curNode->isFuncOuterBlock)
-			fout<<"add $"<<g<<", %rsp\n";
-		cout<<"block closed "<<g<<"\n";
+		if (g && !curNode->isFuncOuterBlock)
+			fout << "add $" << g << ", %rsp\n";
+		cout << "block closed " << g << "\n";
+		break;
+	}
+	case WHILE_NODE:
+	{
+		int curWhileCnt = whileCnt++;
+		fout << "_while" << curWhileCnt << ":\n";
+		traverse(fout, curNode->descendants[0]);
+		fout << "cmp $1, %rax\n";
+		fout << "jne _postwhile" << curWhileCnt << "\n";
+		traverse(fout, curNode->descendants[1]);
+		fout << "jmp _while" << curWhileCnt << "\n";
+		fout << "_postwhile" << curWhileCnt << ":\n";
+		break;
+	}
+	case FOR_NODE:
+	{
+		int curForCnt = forCnt++;
+		traverse(fout, curNode->descendants[0]);
+		fout << "_for" << curForCnt << ":\n";
+		traverse(fout, curNode->descendants[1]);
+		fout << "cmp $1, %rax\n";
+		fout << "jne _postfor" << curForCnt << "\n";
+		traverse(fout, curNode->descendants[3]);
+		traverse(fout, curNode->descendants[2]);
+		fout << "jmp _for" << curForCnt << "\n";
+
+		fout << "_postfor" << curForCnt << ":\n";
 		break;
 	}
 	case RETURN_STATEMENT_NODE:
@@ -336,6 +365,8 @@ void AST:: traverse(ofstream &fout, node* curNode)
 		fout << "mov " << offset << "(%rbp), %rax\n";
 		break;
 	}
+	case NULLEXP_NODE:
+		break;
 	default:
 		cout << "ERROR\n";
 		exit(1);
